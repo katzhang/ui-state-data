@@ -31,13 +31,17 @@ var Unit = Backbone.Model.extend({
 	},
 	incrementCount: function() {
 		var count = this.get('count');
-		count++;
-		this.set('count', count);
+		if((count + 1) <= data.resources.supply) {
+			count++;
+			this.set('count', count);
+		}
 	},
 	decrementCount: function() {
 		var count = this.get('count');
-		count--;
-		this.set('count', count);
+		if (count > 0) {
+			count--;
+			this.set('count', count);
+		}
 	}
 });
 
@@ -74,7 +78,7 @@ var UnitCollection = Backbone.Collection.extend({
 var Resources = Backbone.Model.extend({
 	defaults: {
 		gold: 0,
-		suppy: 0
+		supply: 0
 	},
 
 	incrementUnit: function(unit) {
@@ -83,17 +87,22 @@ var Resources = Backbone.Model.extend({
 		var supply = this.get('supply');
 
 		//TODO: validate that gold and supply are never negative
-		this.set('gold', gold - cost);
-		this.set('supply', --supply);
+		if(((gold - cost) >= 0) && ((supply - 1) >= 0)) {
+			this.set('gold', gold - cost);
+			this.set('supply', --supply);
+		}
 	},
 
 	decrementUnit: function(unit) {
 		var cost = unit.get('cost');
 		var gold = this.get('gold');
 		var supply = this.get('supply');
+		var count = unit.get('count');
 
-		this.set('gold', gold + cost);
-		this.set('supply', ++supply);
+		if(((gold + cost) <= data.resources.gold) && ((supply + 1) <= data.resources.supply)) {
+			this.set('gold', gold + cost);
+			this.set('supply', ++supply);
+		}
 	}
 });
 
