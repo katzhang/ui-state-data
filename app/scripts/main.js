@@ -41,6 +41,32 @@ var Unit = Backbone.Model.extend({
 	}
 });
 
+var UnitView = Backbone.View.extend({
+	tagName: 'li',
+	template: _.template($('#unit-template').html()),
+	events: {
+		'click .increment-count': 'incrementCount',
+		'click .decrement-count': 'decrementCount'
+	},
+	initialize: function() {
+		this.listenTo(this.model, 'change', this.render);
+	},
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	},
+	incrementCount: function(e) {
+		e.preventDefault();
+		this.model.incrementCount();
+		resources.incrementUnit(this.model);
+	},
+	decrementCount: function(e) {
+		e.preventDefault();
+		this.model.decrementCount();
+		resources.decrementUnit(this.model);
+	}
+});
+
 var UnitCollection = Backbone.Collection.extend({
 	model: Unit
 });
@@ -69,20 +95,26 @@ var Resources = Backbone.Model.extend({
 		this.set('gold', gold + cost);
 		this.set('supply', ++supply);
 	}
+});
 
+var ResourcesView = Backbone.View.extend({
+	template: _.template($('#resources-template').html()),
+	initialize: function() {
+		this.listenTo(this.model, 'change', this.render);
+	},
+	render: function() {
+		this.$el.html(this.template(this.model.toJSON()));
+		return this;
+	}
 });
 
 var unitCollection = new UnitCollection(data.unitTypes);
 var resources = new Resources(data.resources);
 
-$('.increment-button').on('click', function(e) {
-	e.preventDefault();
+_.each(unitCollection.models, function(unit) {
+	var view = new UnitView({model: unit}).render().el;
+	$('.unit-list').append(view);
+});
 
-	var unitName = $(this).attr('data-unit');
-	var unit = unitCollection.where({name: unitName})[0];
-	unit.incrementCount();
-	resources.incrementUnit(unit);
-	console.log(unitCollection);
-	console.log(resources);
-
-})
+var resourcesView = new ResourcesView({model: resources}).render().el;
+$('.container').append(resourcesView);
