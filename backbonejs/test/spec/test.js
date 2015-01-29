@@ -5,7 +5,8 @@
 
     describe('unit collection', function () {
         it('is an instance of Backbone.Model', function() {
-        	expect(unitCollection).to.be.instanceof(Backbone.Model);
+        	var unitCollection = new UnitCollection();
+        	expect(unitCollection).to.be.instanceof(Backbone.Collection);
         })
     });
 })();
