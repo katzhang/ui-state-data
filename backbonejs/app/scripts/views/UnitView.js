@@ -15,11 +15,9 @@ var UnitView = Backbone.View.extend({
 	incrementCount: function(e) {
 		e.preventDefault();
 		this.model.incrementCount();
-		resources.incrementUnit(this.model);
 	},
 	decrementCount: function(e) {
 		e.preventDefault();
 		this.model.decrementCount();
-		resources.decrementUnit(this.model);
 	}
 });
