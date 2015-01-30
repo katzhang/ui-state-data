@@ -5,12 +5,12 @@ var Resources = Backbone.Model.extend({
 	},
 
 	incrementUnit: function(unit) {
+		var count = unit.get('count');
 		var cost = unit.get('cost');
 		var gold = this.get('gold');
 		var supply = this.get('supply');
 
-		//TODO: validate that gold and supply are never negative
-		if(((gold - cost) >= 0) && ((supply - 1) >= 0)) {
+		if(canIncrement(cost, count, gold, supply)) {
 			this.set('gold', gold - cost);
 			this.set('supply', --supply);
 		}
@@ -22,7 +22,7 @@ var Resources = Backbone.Model.extend({
 		var supply = this.get('supply');
 		var count = unit.get('count');
 
-		if(((gold + cost) <= data.resources.gold) && ((supply + 1) <= data.resources.supply)) {
+		if(canDecrement(cost, count, gold, supply)) {
 			this.set('gold', gold + cost);
 			this.set('supply', ++supply);
 		}

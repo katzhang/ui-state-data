@@ -6,14 +6,22 @@ var Unit = Backbone.Model.extend({
 	},
 	incrementCount: function() {
 		var count = this.get('count');
-		if((count + 1) <= data.resources.supply) {
+		var cost = this.get('cost');
+		var gold = resources.get('gold');
+		var supply = resources.get('supply');
+
+		if(canIncrement(cost, count, gold, supply)) {
 			count++;
 			this.set('count', count);
 		}
 	},
 	decrementCount: function() {
 		var count = this.get('count');
-		if (count > 0) {
+		var cost = this.get('cost');
+		var gold = resources.get('gold');
+		var supply = resources.get('supply');
+
+		if (canDecrement(cost, count, gold, supply)) {
 			count--;
 			this.set('count', count);
 		}
